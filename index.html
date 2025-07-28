@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+  <meta charset="UTF-8">
+  <title>Darbo dienų skaičiuoklė</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    label, select, input, button {
+      margin: 5px 0;
+      display: block;
+    }
+    table {
+      margin-top: 20px;
+      border-collapse: collapse;
+      width: 100%;
+    }
+    th, td {
+      border: 1px solid #ccc;
+      padding: 8px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Darbo dienų skaičiuoklė</h1>
+
+  <label for="year">Pasirink metai:</label>
+  <select id="year">
+    <option value="2024">2024</option>
+    <option value="2025">2025</option>
+  </select>
+
+  <label for="month">Pasirink mėnesį:</label>
+  <select id="month">
+    <option value="0">Sausis</option>
+    <option value="1">Vasaris</option>
+    <option value="2">Kovas</option>
+    <option value="3">Balandis</option>
+    <option value="4">Gegužė</option>
+    <option value="5">Birželis</option>
+    <option value="6">Liepa</option>
+    <option value="7">Rugpjūtis</option>
+    <option value="8">Rugsėjis</option>
+    <option value="9">Spalis</option>
+    <option value="10">Lapkritis</option>
+    <option value="11">Gruodis</option>
+  </select>
+
+  <label for="days">Įveskite darbo dienas (atskirta kableliais):</label>
+  <input type="text" id="days" placeholder="pvz.: 1,2,3,6,7">
+
+  <button onclick="pridetiDarboDienas()">Pridėti</button>
+
+  <table id="rezultatuLentele">
+    <thead>
+      <tr>
+        <th>Metai</th>
+        <th>Mėnuo</th>
+        <th>Darbų dienos</th>
+        <th>Skaičius</th>
+      </tr>
+    </thead>
+    <tbody id="irasai">
+    </tbody>
+    <tfoot>
+      <tr>
+        <td colspan="3"><strong>Iš viso pradirbta:</strong></td>
+        <td id="viso">0</td>
+      </tr>
+    </tfoot>
+  </table>
+
+  <script>
+    const irasai = [];
+
+    function pridetiDarboDienas() {
+      const metai = document.getElementById("year").value;
+      const menuo = document.getElementById("month").value;
+      const dienosTekstas = document.getElementById("days").value;
+
+      if (!dienosTekstas.trim()) return;
+
+      const dienos = dienosTekstas.split(',').map(s => parseInt(s.trim())).filter(n => !isNaN(n));
+      const skaicius = dienos.length;
+
+      irasai.push({ metai, menuo, dienos, skaicius });
+
+      atnaujintiLentele();
+    }
+
+    function atnaujintiLentele() {
+      const tbody = document.getElementById("irasai");
+      tbody.innerHTML = "";
+      let viso = 0;
+
+      irasai.forEach(({ metai, menuo, dienos, skaicius }) => {
+        const eilute = document.createElement("tr");
+        eilute.innerHTML = `
+          <td>${metai}</td>
+          <td>${gautiMenuoPavadinima(menuo)}</td>
+          <td>${dienos.join(', ')}</td>
+          <td>${skaicius}</td>
+        `;
+        tbody.appendChild(eilute);
+        viso += skaicius;
+      });
+
+      document.getElementById("viso").textContent = viso;
+    }
+
+    function gautiMenuoPavadinima(nr) {
+      const menesiai = ["Sausis", "Vasaris", "Kovas", "Balandis", "Gegužė", "Birželis", "Liepa", "Rugpjūtis", "Rugsėjis", "Spalis", "Lapkritis", "Gruodis"];
+      return menesiai[parseInt(nr)];
+    }
+  </script>
+</body>
+</html>
